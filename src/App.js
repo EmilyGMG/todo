@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {
   BrowserRouter as Router,
-  Route
+  
 } from "react-router-dom";
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
@@ -13,46 +13,74 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/core/Menu';
 import './App.css'
 // import Button from '@material-ui/core/Button';
-import Item from './Item';
 import Login from './Login';
-import Cadastro from './Cadastro';
+ 
+import Button from '@material-ui/core/Button';
+import fire from './config/Fire';
+import Home from './Home';
+ 
 class App extends Component {
+  constructor() {
+    super();
+    this.state = ({
+      user: null,
+    });
+    this.authListener = this.authListener.bind(this);
+  }
 
+  componentDidMount() {
+    this.authListener();
+  }
+
+  authListener() {
+    fire.auth().onAuthStateChanged((user) => {
+      console.log(user);
+      if (user) {
+        this.setState({ user });
+        localStorage.setItem('user', user.uid);
+      } else {
+        this.setState({ user: null });
+        localStorage.removeItem('user');
+      }
+    });
+  }
   render() {
-    
+
     const { classes } = this.props;
     return (
       <Router>
+  
         <div className={classes.root}>
           <AppBar position="static">
             <Toolbar>
               <IconButton className={classes.menuButton} color="inherit" aria-label="Menu">
                 <MenuIcon />
               </IconButton>
-              <Typography variant="h6" color="inherit" className={classes.grow}>
+              <Button href="/" color="inherit">
                 Login
-          </Typography>
+                </Button>
               {/* <Button href="/cadastro" color="inherit">Cadastro</Button> */}
             </Toolbar>
           </AppBar>
 
-          <Route path="/" exact component={Login} />
-        <Route path="/item" exact component={Item} />
-        <Route path="/cadastro" exact component={Cadastro} />
+          {this.state.user ? ( <Home />) : (<Login />)}
+ 
+
+         {/*  <Route path="/cadastro" exact component={Cadastro} />*/}
 
           <AppBar position="static" className={classes.margiiin}>
-        <Toolbar variant="dense">
-          <IconButton className={classes.menuButton} color="inherit" aria-label="Menu">
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" color="inherit">
-            Footer
+            <Toolbar variant="dense">
+              <IconButton className={classes.menuButton} color="inherit" aria-label="Menu">
+                <MenuIcon />
+              </IconButton>
+              <Typography variant="h6" color="inherit">
+                Footer
           </Typography>
-        </Toolbar>
-      </AppBar>
+            </Toolbar>
+          </AppBar>
         </div>
 
-      
+
       </Router>
     );
   }
@@ -74,7 +102,7 @@ const styles = theme => ({
     margin: 'auto',
     maxWidth: '500',
   },
-  margiiin:{
+  margiiin: {
     position: 'fixed',
     left: 0,
     bottom: 0,

@@ -11,14 +11,53 @@ import {
 } from "react-router-dom";
 import PropTypes from 'prop-types';
 import Cadastro from './Cadastro';
+import Hidden from '@material-ui/core/Hidden'
+import fire from './config/Fire';
 
 class Login extends Component {
-
+    constructor(props) {
+        super(props);
+        this.login = this.login.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+        this.state = {
+          email: '',
+          password: ''
+        };
+      }
+    
+      handleChange(e) {
+        this.setState({ [e.target.name]: e.target.value });
+      }
+    
+      login(e) {
+        e.preventDefault();
+        fire.auth().signInWithEmailAndPassword(this.state.email, this.state.password).then((u)=>{
+        }).catch((error) => {
+            console.log(error);
+          });
+      }
+ 
     render() {
         const { classes } = this.props;
         return (
             <Router>
                 <div className={classes.root}>
+
+                    <Hidden xlUp>
+                        <Grid item xs className={classes.marginpaper}>
+                            <Paper className={classes.paper}></Paper>
+                        </Grid>
+                        <Grid item xs className={classes.marginpaper}>
+                            <Paper className={classes.paper}></Paper>
+                        </Grid>
+                        <Grid item xs className={classes.marginpaper}>
+                            <Paper className={classes.paper}></Paper>
+                        </Grid>
+                        <Grid item xs className={classes.marginpaper}>
+                            <Paper className={classes.paper}></Paper>
+                        </Grid>
+                    </Hidden>
+
                     <Paper className={classes.paper} p={4}>
                         <Grid container direction="column">
 
@@ -27,10 +66,12 @@ class Login extends Component {
                                     Email
                                  </Typography>
                                 <TextField
-                                    id="outlined-email-input"
+                                    value={this.state.email} 
+                                    onChange={this.handleChange}
+                                    type="email" 
+                                    name="email" 
+                                    id="exampleInputEmail1"
                                     label="ex: jhon@gmail.com"
-                                    type="email"
-                                    name="email"
                                     autoComplete="email"
                                     variant="outlined"
                                     fullWidth
@@ -40,9 +81,13 @@ class Login extends Component {
                                     Password
                                  </Typography>
                                 <TextField
-                                    id="outlined-password-input"
+                                    value={this.state.password} 
+                                    onChange={this.handleChange} 
+                                    type="password" 
+                                    name="password" 
+                                    class="form-control" 
+                                    id="exampleInputPassword1" 
                                     label="Password"
-                                    type="password"
                                     autoComplete="current-password"
                                     variant="outlined"
                                     fullWidth
@@ -51,14 +96,14 @@ class Login extends Component {
 
                             <Grid item mt={1} >
                                 <Typography align="right"  >
-                                    <Button color="primary" variant="contained" className={classes.margin} >Submit</Button>
+                                    <Button  type="submit" onClick={this.login} color="primary" variant="contained" className={classes.margin}>Login</Button>
                                     <Typography align="left">
-                                <Button color="primary"variant="contained" href="/cadastro"className={classes.margiin}>Cadastro</Button>
-                            </Typography>
+                                        <Button color="primary" variant="contained" href="/cadastro" className={classes.margiin}>Cadastro</Button>
+                                    </Typography>
                                 </Typography>
                             </Grid>
-                            
-                           
+
+
                         </Grid>
                     </Paper>
                 </div>
@@ -86,16 +131,17 @@ const styles = theme => ({
         padding: theme.spacing.unit * 2,
         margin: 'auto',
         maxWidth: 500,
-        marginTop: 200,
-        padding: 15,
     },
     margin: {
-        marginTop:40,
-       
+        marginTop: 40,
+
     },
     margiin: {
-        marginTop:-55,
-    }
+        marginTop: -60,
+    },
+    marginpaper: {
+        opacity: 0.0,
+    },
 });
 
 Login.propTypes = {
